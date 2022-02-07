@@ -11,6 +11,7 @@ import org.json.JSONException;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.widget.ProgressBar;
 
 import android.graphics.Color;
