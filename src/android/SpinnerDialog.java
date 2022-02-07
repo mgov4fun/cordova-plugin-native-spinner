@@ -88,7 +88,29 @@ public class SpinnerDialog extends CordovaPlugin {
           }
           
           if (title == null && message == null) {
-            dialog.setContentView(new ProgressBar(cordova.getActivity()));
+            ProgressBar progressBar = new ProgressBar(cordova.getActivity());
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+              String colorName = preferences.getString("SplashScreenSpinnerColor", null);
+              if(colorName != null){
+                int[][] states = new int[][] {
+                        new int[] { android.R.attr.state_enabled}, // enabled
+                        new int[] {-android.R.attr.state_enabled}, // disabled
+                        new int[] {-android.R.attr.state_checked}, // unchecked
+                        new int[] { android.R.attr.state_pressed}  // pressed
+                };
+                int progressBarColor = Color.parseColor(colorName);
+                int[] colors = new int[] {
+                        progressBarColor,
+                        progressBarColor,
+                        progressBarColor,
+                        progressBarColor
+                };
+                ColorStateList colorStateList = new ColorStateList(states, colors);
+                progressBar.setIndeterminateTintList(colorStateList);
+              }
+            }
+
+            dialog.setContentView(progressBar);
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
           }
         }
