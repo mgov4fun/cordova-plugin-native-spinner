@@ -9,9 +9,9 @@ NPM Package: [cordova-plugin-native-spinner](https://www.npmjs.com/package/cordo
 :fire: **This Plugin** is officially using in [ionic-native](https://ionicframework.com/docs/native/spinner-dialog/) :fire:
 
 ## Platforms
-| <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Android_robot.svg/511px-Android_robot.svg.png" width="48px" height="48px" alt="Android logo"> | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/2000px-Apple_logo_black.svg.png" width="48px" height="48px" alt="iOS logo"> | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/2000px-Windows_logo_-_2012.svg.png" width="48px" height="48px" alt="Windows logo"> | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/2000px-Windows_logo_-_2012.svg.png" width="48px" height="48px" alt="Windows logo">
-|:---:|:---:|:---:|:---:|
-| 4.1+ ✔ | 10+ ✔ | Windows Phone 8.1+ ✔ | 10+ ✔ |
+| <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Android_robot_head.svg/121px-Android_robot_head.svg.png" width="48px" height="27px" alt="Android logo"> | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/80px-Apple_logo_black.svg.png" width="39px" height="48px" alt="iOS logo"> | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/2000px-Windows_logo_-_2012.svg.png" width="48px" height="48px" alt="Windows logo"> | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/2000px-Windows_logo_-_2012.svg.png" width="48px" height="48px" alt="Windows logo"> | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Internet_Explorer_10%2B11_logo.svg/65px-Internet_Explorer_10%2B11_logo.svg.png" width="48px" height="48px" alt="iOS logo">
+|:---:|:---:|:---:|:---:|:---:|
+| 4.1+ ✔ | 10+ ✔ | WP 8.1+ ✔ | 10+ ✔ | Browser ✔ |
 
 ## Installation
 
@@ -90,6 +90,20 @@ SpinnerDialog.hide();
 ## Quirks
 * Cordova 5.0 or higher is required for Windows 10 support.
 * Windows 10 Mobile or Windows Phone 8.1 is required as desktop doesn't support StatusBar.
+
+## Screenshots
+
+### Android
+
+<img src="https://github.com/andreszs/cordova-plugin-demos/blob/main/com.andreszs.spinner.demo/screenshots/android/spinner-2.png?raw=true" width="240" />
+
+### Browser
+
+<img src="https://github.com/andreszs/cordova-plugin-demos/blob/main/com.andreszs.spinner.demo/screenshots/browser/spinner-2.png?raw=true" width="240" />
+
+## Plugin demo app
+
+Demo app source code to test the plugin is available at the [cordova-plugin-demos repository](https://github.com/andreszs/cordova-plugin-demos/tree/main/com.andreszs.spinner.demo "cordova-plugin-demos repository") by Andrés Zsögön.
 
 ## License
 See "LICENSE".
