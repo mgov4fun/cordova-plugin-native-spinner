@@ -1,6 +1,6 @@
 # cordova-plugin-native-spinner
 
-![npm](https://img.shields.io/npm/dt/cordova-plugin-native-spinner) ![npm](https://img.shields.io/npm/v/cordova-plugin-native-spinner) ![GitHub package.json version](https://img.shields.io/github/package-json/v/greybax/cordova-plugin-native-spinner?color=FF6D00&label=master&logo=github) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/greybax/cordova-plugin-native-spinner) ![GitHub top language](https://img.shields.io/github/languages/top/greybax/cordova-plugin-native-spinner) ![GitHub](https://img.shields.io/github/license/greybax/cordova-plugin-native-spinner) ![GitHub last commit](https://img.shields.io/github/last-commit/greybax/cordova-plugin-native-spinner)
+[![NPM version][npm-image]][npm-url] [![NPM downloads](https://img.shields.io/npm/dm/cordova-plugin-native-spinner.svg)](https://www.npmjs.com/package/cordova-plugin-native-spinner) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/greybax/cordova-plugin-native-spinner) ![GitHub top language](https://img.shields.io/github/languages/top/greybax/cordova-plugin-native-spinner) ![License](https://img.shields.io/github/license/greybax/cordova-plugin-native-spinner)
 
 > Cordova plugin for showing a native spinner based on Paldom/SpinnerDialog
 
