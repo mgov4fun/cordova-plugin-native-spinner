@@ -109,6 +109,10 @@ SpinnerDialog.hide();
 
 Demo app source code to test the plugin is available at the [cordova-plugin-demos repository](https://github.com/andreszs/cordova-plugin-demos/tree/main/com.andreszs.spinner.demo "cordova-plugin-demos repository") by Andrés Zsögön.
 
+## Post in my blog
+
+https://alfilatov.com/posts/cordova-plugin-native-spinner/
+
 ## License
 See "LICENSE".
 Based on https://github.com/Paldom/SpinnerDialog with lots of awesome improvements! :star: :tada: :rocket: :star:
