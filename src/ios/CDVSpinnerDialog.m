@@ -22,6 +22,12 @@
 @property (nonatomic, retain) UIActivityIndicatorView *indicator;
 @property (nonatomic, retain) UIView *overlay;
 @property (nonatomic, retain) UILabel *messageView;
+@property (nonatomic, weak) UIView *hostView;
+@property (nonatomic, assign) BOOL hostedPresentation;
+- (void)show:(CDVInvokedUrlCommand *)command
+   inHostView:(UIView *)hostView
+    forceFixed:(BOOL)forceFixed;
+- (void)removeHostedPresentationIfDetached;
 
 
 @end
@@ -33,6 +39,10 @@
 @synthesize messageView = _messageView;
 
 -(CGRect)rectForView {
+    if (self.hostView != nil) {
+        return self.hostView.bounds;
+    }
+
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     BOOL landscape = (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight);
     if(landscape){
@@ -55,6 +65,7 @@
 - (UIView *)overlay {
     if (!_overlay) {
         _overlay = [[UIView alloc] initWithFrame:self.rectForView];
+        _overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         _overlay.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:[alpha floatValue]];
         _indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
         _indicator.center = _overlay.center;
@@ -80,6 +91,31 @@
 
 
 - (void) show:(CDVInvokedUrlCommand*)command {
+    [self show:command inHostView:nil forceFixed:NO];
+}
+
+- (void)showInHostView:(UIView *)hostView {
+    if (hostView == nil) {
+        return;
+    }
+    CDVInvokedUrlCommand *command = [[CDVInvokedUrlCommand alloc]
+        initWithArguments:@[[NSNull null], [NSNull null], @YES, @0.35, @1.0, @1.0, @1.0]
+        callbackId:nil
+        className:@"SpinnerDialog"
+        methodName:@"show"];
+    [self show:command inHostView:hostView];
+}
+
+- (void) show:(CDVInvokedUrlCommand*)command inHostView:(UIView *)hostView {
+    if (hostView == nil) {
+        return;
+    }
+    [self show:command inHostView:hostView forceFixed:YES];
+}
+
+- (void) show:(CDVInvokedUrlCommand*)command
+    inHostView:(UIView *)hostView
+     forceFixed:(BOOL)forceFixed {
 
     callbackId = command.callbackId;
     
@@ -88,20 +124,43 @@
 
     title = [command argumentAtIndex:0];
     message = [command argumentAtIndex:1];
-    isFixed = [command argumentAtIndex:2];
+    isFixed = [NSNumber numberWithBool:forceFixed || [[command argumentAtIndex:2] boolValue]];
     alpha = [command argumentAtIndex:3];
     red = [command argumentAtIndex:4];
     green = [command argumentAtIndex:5];
     blue = [command argumentAtIndex:6];
     
-    UIViewController *rootViewController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+    self.hostView = hostView;
+    self.hostedPresentation = hostView != nil;
+    UIView *presentationView = hostView;
+    if (presentationView == nil) {
+        UIViewController *rootViewController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
+        presentationView = rootViewController.view;
+    }
+    if (presentationView == nil) {
+        return;
+    }
 
-    [rootViewController.view addSubview:self.overlay];
+    self.overlay.frame = presentationView.bounds;
+    [presentationView addSubview:self.overlay];
 
 }
 
 - (void) hide:(CDVInvokedUrlCommand*)command {
     [self hide];
+}
+
+- (void)hideInHostView {
+    if (self.hostedPresentation) {
+        [self hide];
+    }
+}
+
+- (void)removeHostedPresentationIfDetached {
+    if (self.hostedPresentation &&
+        (self.hostView == nil || self.overlay == nil || self.overlay.superview == nil)) {
+        [self hide];
+    }
 }
 
 - (void) hide {
@@ -114,6 +173,17 @@
         _messageView = nil;
         _overlay = nil;
     }
+    self.hostView = nil;
+    self.hostedPresentation = NO;
+}
+
+- (void)onReset {
+    [self removeHostedPresentationIfDetached];
+    [super onReset];
+}
+
+- (void)dealloc {
+    [self hide];
 }
 
 
