@@ -11,6 +11,9 @@
 @interface CDVSpinnerDialog : CDVPlugin
 
 - (void)show:(CDVInvokedUrlCommand*)command;
+- (BOOL)showHosted:(UIView *)host ownerToken:(NSString *)ownerToken;
+- (void)hideHosted:(NSString *)ownerToken;
+- (void)clearHosted;
 - (void)showInHostView:(UIView *)hostView;
 - (void)show:(CDVInvokedUrlCommand*)command inHostView:(UIView *)hostView;
 - (void)hide:(CDVInvokedUrlCommand*)command;

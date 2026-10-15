@@ -40,6 +40,32 @@ cordova prepare
 - `SpinnerDialog.show`
 - `SpinnerDialog.hide`
 
+### Native hosted API (iOS and Android)
+
+Native controllers that own an embedded content host can use the following
+methods directly. These methods are not part of the JavaScript `SpinnerDialog`
+object:
+
+```text
+showHosted(host, ownerToken)
+hideHosted(ownerToken)
+clearHosted()
+```
+
+`showHosted` attaches a fixed, non-modal spinner to `host` and allows one
+hosted owner at a time. A repeated call with the same non-empty token is
+idempotent. A different token is ignored and never replaces the current
+owner. `hideHosted` only removes the spinner when its token is the current
+owner; stale or mismatched hides are no-ops. `clearHosted` unconditionally
+removes hosted state and should be called by the owning controller during host
+or Activity teardown (the plugin also clears hosted state during its native
+lifecycle teardown).
+
+Hosted state is independent from the global JavaScript spinner: global
+`show`/`hide` never change hosted state, and hosted methods never dismiss the
+global spinner. Hosted UI changes are marshalled to the platform main/UI
+thread. The hosted indicator does not require visible text.
+
 #### SpinnerDialog.show
 
     SpinnerDialog.show([title], [message], [cancelCallback])

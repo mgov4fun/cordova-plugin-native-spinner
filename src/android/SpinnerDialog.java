@@ -29,25 +29,48 @@ public class SpinnerDialog extends CordovaPlugin {
   public Stack<ProgressDialog> spinnerDialogStack = new Stack<ProgressDialog>();
   private FrameLayout hostedSpinnerView;
   private ViewGroup hostedSpinnerHost;
+  private String hostedOwnerToken;
+
+  private static final String LEGACY_HOSTED_OWNER_TOKEN = "__legacy_hosted_spinner_owner__";
 
   public SpinnerDialog() {
   }
 
   /**
-   * Presents the standard spinner inside the caller's content host. This is a
-   * fixed, non-modal content view; it never creates a window or Activity dialog.
+   * Presents the standard spinner inside the caller's content host for the
+   * supplied owner. Hosted state is independent from the global dialog stack.
    */
   public void showInHostView(final ViewGroup hostView) {
+    showHosted(hostView, LEGACY_HOSTED_OWNER_TOKEN);
+  }
+
+  /**
+   * Presents a fixed, non-modal content view owned by ownerToken. There is one
+   * hosted owner slot: the current owner is idempotent, while another owner is
+   * ignored and can never replace it.
+   */
+  public boolean showHosted(final ViewGroup hostView, final String ownerToken) {
     if (hostView == null) {
-      return;
+      return false;
     }
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        removeHostedSpinnerView();
+    if (ownerToken == null || ownerToken.length() == 0) {
+      return false;
+    }
+    if (Looper.myLooper() != Looper.getMainLooper()) {
+      return false;
+    }
+    removeHostedSpinnerIfDetached();
+    if (!hostView.isAttachedToWindow() || !hostView.isShown() ||
+            hostView.getWidth() <= 0 || hostView.getHeight() <= 0) {
+      return false;
+    }
+    if (hostedOwnerToken != null) {
+      return hostedOwnerToken.equals(ownerToken) && hostedSpinnerView != null &&
+              hostedSpinnerView.getParent() == hostView;
+    }
 
         FrameLayout overlay = new FrameLayout(hostView.getContext());
-        overlay.setBackgroundColor(Color.TRANSPARENT);
+        overlay.setBackgroundColor(Color.argb(41, 0, 0, 0));
         overlay.setClickable(true);
         overlay.setFocusable(true);
         overlay.setFocusableInTouchMode(true);
@@ -70,17 +93,37 @@ public class SpinnerDialog extends CordovaPlugin {
                   ViewGroup.LayoutParams.MATCH_PARENT,
                   ViewGroup.LayoutParams.MATCH_PARENT));
         } catch (RuntimeException ignored) {
-          return;
+          return false;
         }
         hostedSpinnerView = overlay;
         hostedSpinnerHost = hostView;
+        hostedOwnerToken = ownerToken;
         overlay.bringToFront();
-      }
-    });
+        return overlay.getParent() == hostView;
   }
 
   /** Removes only the native hosted spinner view, if one is currently attached. */
   public void hideInHostView() {
+    hideHosted(LEGACY_HOSTED_OWNER_TOKEN);
+  }
+
+  /** Removes the hosted spinner only when ownerToken owns the hosted slot. */
+  public void hideHosted(final String ownerToken) {
+    if (ownerToken == null || ownerToken.length() == 0) {
+      return;
+    }
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        if (ownerToken.equals(hostedOwnerToken)) {
+          removeHostedSpinnerView();
+        }
+      }
+    });
+  }
+
+  /** Clears the hosted spinner unconditionally; intended for owner teardown. */
+  public void clearHosted() {
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
@@ -109,6 +152,7 @@ public class SpinnerDialog extends CordovaPlugin {
     }
     hostedSpinnerView = null;
     hostedSpinnerHost = null;
+    hostedOwnerToken = null;
   }
 
   private void removeHostedSpinnerIfDetached() {
@@ -150,17 +194,13 @@ public class SpinnerDialog extends CordovaPlugin {
 
   @Override
   public void onReset() {
-    removeHostedSpinnerIfDetached();
+    clearHosted();
     super.onReset();
   }
 
   @Override
   public void onDestroy() {
-    if (Looper.myLooper() == Looper.getMainLooper()) {
-      removeHostedSpinnerView();
-    } else {
-      hideInHostView();
-    }
+    clearHosted();
     super.onDestroy();
   }
 
