@@ -74,6 +74,8 @@ public class SpinnerDialog extends CordovaPlugin {
         overlay.setClickable(true);
         overlay.setFocusable(true);
         overlay.setFocusableInTouchMode(true);
+        overlay.setContentDescription("Laden");
+        overlay.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
         overlay.setOnClickListener(new View.OnClickListener() {
           @Override
           public void onClick(View view) {
@@ -99,7 +101,12 @@ public class SpinnerDialog extends CordovaPlugin {
         hostedSpinnerHost = hostView;
         hostedOwnerToken = ownerToken;
         overlay.bringToFront();
-        return overlay.getParent() == hostView;
+        boolean shown = overlay.getParent() == hostView;
+        if (shown) {
+          // showHosted is called only after the caller's defer; a new owner gets one announcement.
+          overlay.announceForAccessibility("Laden");
+        }
+        return shown;
   }
 
   /** Removes only the native hosted spinner view, if one is currently attached. */

@@ -34,6 +34,11 @@ assert.match(androidSource, /hostView\.isAttachedToWindow\(\)[\s\S]*hostView\.ge
 assert.match(androidSource, /Color\.argb\(41, 0, 0, 0\)/);
 assert.match(androidSource, /Gravity\.CENTER/);
 assert.doesNotMatch(androidSource, /overlay\.setBackgroundColor\(Color\.TRANSPARENT\)/);
+assert.match(androidSource, /overlay\.setContentDescription\("Laden"\)/);
+assert.match(androidSource, /setAccessibilityLiveRegion\(View\.ACCESSIBILITY_LIVE_REGION_POLITE\)/);
+assert.match(androidSource, /if \(shown\)[\s\S]*announceForAccessibility\("Laden"\)/);
+assert.match(iosSource, /hostedAccessibilityAnnounced/);
+assert.match(iosSource, /if \(!self\.hostedAccessibilityAnnounced\)[\s\S]*UIAccessibilityAnnouncementNotification/);
 
 // Hosted ownership remains independent from the legacy global dialog state.
 assert.match(iosSource, /Global spinner state is deliberately separate from hosted state/);

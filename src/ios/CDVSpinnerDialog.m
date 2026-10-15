@@ -27,6 +27,7 @@ static NSString * const CDVLegacyHostedOwnerToken = @"__legacy_hosted_spinner_ow
 @property (nonatomic, retain) UIActivityIndicatorView *hostedIndicator;
 @property (nonatomic, weak) UIView *hostedHostView;
 @property (nonatomic, copy) NSString *hostedOwnerToken;
+@property (nonatomic, assign) BOOL hostedAccessibilityAnnounced;
 
 - (void)showGlobal:(CDVInvokedUrlCommand *)command;
 - (BOOL)showHostedOnMainThread:(UIView *)host ownerToken:(NSString *)ownerToken;
@@ -47,6 +48,7 @@ static NSString * const CDVLegacyHostedOwnerToken = @"__legacy_hosted_spinner_ow
 @synthesize hostedIndicator = _hostedIndicator;
 @synthesize hostedHostView = _hostedHostView;
 @synthesize hostedOwnerToken = _hostedOwnerToken;
+@synthesize hostedAccessibilityAnnounced = _hostedAccessibilityAnnounced;
 
 - (void)performOnMainThread:(dispatch_block_t)block {
     if ([NSThread isMainThread]) {
@@ -196,6 +198,10 @@ static NSString * const CDVLegacyHostedOwnerToken = @"__legacy_hosted_spinner_ow
     self.hostedIndicator = hostedIndicator;
     self.hostedHostView = host;
     self.hostedOwnerToken = ownerToken;
+    if (!self.hostedAccessibilityAnnounced) {
+        self.hostedAccessibilityAnnounced = YES;
+        UIAccessibilityPostNotification(UIAccessibilityAnnouncementNotification, @"Laden");
+    }
     return YES;
 }
 
@@ -256,6 +262,7 @@ static NSString * const CDVLegacyHostedOwnerToken = @"__legacy_hosted_spinner_ow
     self.hostedOverlay = nil;
     self.hostedHostView = nil;
     self.hostedOwnerToken = nil;
+    self.hostedAccessibilityAnnounced = NO;
 }
 
 - (void)showInHostView:(UIView *)hostView {
